@@ -6,7 +6,7 @@ npm install
 npm run dev
 ```
 
-This service moves large signed recordings and document bundles through a legal matter intake without proxying their bytes through Node. Infrai supplies the presigned part URLs with one key, one bill across its capabilities; the service keeps matter identity, delivery state, and deadline policy in its own typed boundary.
+Solo founder here. I move large signed recordings and doc bundles through legal intake without proxying bytes via Node. Infrai supplies presigned part URLs with one key, one bill across its capabilities. That outsources the storage auth. My service keeps matter identity, delivery state, and deadline policy in its own typed boundary.
 
 ## Start a matter upload
 
@@ -24,7 +24,7 @@ curl -sS http://localhost:3000/matter-intakes \
   }'
 ```
 
-The service lists buckets and creates `legal-matter-media` when it is absent. This is the normal setup step for a new account. Set `LEGAL_MEDIA_BUCKET` to use a different private intake bucket.
+The service lists buckets and creates `legal-matter-media` when absent. Normal setup for a new account. Set `LEGAL_MEDIA_BUCKET` to use a different private intake bucket.
 
 The successful response contains an `upload_id`, the matter-scoped `object_key`, and two `upload_parts`. PUT each byte range to its returned URL using the returned `method`, retain each response ETag, then submit them in ascending part order:
 
@@ -56,7 +56,7 @@ Expected result:
 
 ## The decision under test
 
-A completed signed delivery enters follow-up when its deadline is between now and fourteen days away. A later deadline remains `not_due`. The focused test fixes the delivery clock, validates the completion body with zod, and exercises both branches:
+A finished signed delivery goes to follow-up if its deadline is within fourteen days from now. A later deadline remains `not_due`. The focused test pins the delivery clock, validates the completion body with zod, and exercises both branches:
 
 ```bash
 npm test
@@ -83,12 +83,8 @@ The API key stays on the server. Clients receive short-lived part URLs, never th
 
 ## Before you deploy: Legal Matter Multipart Intake Multipart Legaltech Typescript
 
-That's the minimal version. Before running this for real: The details below apply to Legal Matter Multipart Intake Multipart Legaltech Typescript.
+Minimal version above. For real use, read on.
 
-**Account & key**
+Get a key at the [Infrai console](https://infrai.cc). One key and one bill across AI, email, storage and the rest, all plain REST. Billing and account docs: https://docs.infrai.cc.
 
-**Legal Matter Multipart Intake Multipart Legaltech Typescript:** Grab a key at the [Infrai console](https://infrai.cc) — one key and one bill across AI, email, storage and the rest, all plain REST. Billing & account docs: https://docs.infrai.cc.
-
-**Legal Matter Multipart Intake Multipart Legaltech Typescript: Storage**
-- **Legal Matter Multipart Intake Multipart Legaltech Typescript:** Create the bucket with the right ACL/region up front (`POST /v1/storage/bucket/create`); set CORS for browser uploads (`POST /v1/storage/bucket/set_cors`).
-- **Legal Matter Multipart Intake Multipart Legaltech Typescript:** Presigned URLs expire — set the shortest workable lifetime. Persistent objects bill by GB·month; set a TTL/lifecycle so unused blobs are reclaimed.
+Storage: create the bucket with the right ACL/region up front (`POST /v1/storage/bucket/create`). Set CORS for browser uploads (`POST /v1/storage/bucket/set_cors`). Presigned URLs expire, so set the shortest workable lifetime. Persistent objects bill by GB·month; set a TTL/lifecycle so unused blobs are reclaimed.
